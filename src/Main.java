@@ -22,6 +22,7 @@ public class Main {
         }
 
         // Wyświetlanie dostępnych opcji
+        // Wyświetlanie dostępnych opcji
         showOptions();
 
 
