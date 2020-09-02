@@ -1,7 +1,9 @@
 package pl.coderslab.taskmanager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -11,18 +13,15 @@ public class TaskManager {
     static final String file = "tasks.csv";
     static final String[] options = {"add", "remove", "list", "exit"};
 
-    
-    
+
     public static void main(String[] args) {
         TaskManager.run();
     }
 
-    
-    
-    
+
     public static void run() {
         showWelcomeMessage();
-        
+
         // Ładowanie danych z pliku
         try {
             loadTasks();
@@ -31,7 +30,7 @@ public class TaskManager {
             e.printStackTrace();
         }
 
-        
+
         while (true) {
             showMainMenu();
             String userChoice = getUserChoice();
@@ -48,7 +47,21 @@ public class TaskManager {
         saveTasksToFile();
     }
 
+
     private static void saveTasksToFile() {
+        PrintWriter printWriter = null;
+        try {
+            printWriter = new PrintWriter(file);
+            for (String[] taskElement : tasks) {
+                for (String oneTask : taskElement) {
+                    printWriter.append(oneTask).append(", ");
+                }
+                printWriter.append("\n");
+            }
+            printWriter.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -58,9 +71,6 @@ public class TaskManager {
     }
 
 
-    
-    
-    
     private static boolean validateUserChoice(String userChoice) {
         // Do wykorzystania binarySearch potrzeba posorotowanej tablicy!
         Arrays.sort(options);
@@ -68,8 +78,6 @@ public class TaskManager {
         return index >= 0;
     }
 
-    
-    
 
     private static void executeValidChoice(String userChoice) {
         switch (userChoice) {
@@ -77,7 +85,7 @@ public class TaskManager {
                 addTask();
                 break;
             case "remove":
-                addTask();
+                removeTask();
                 break;
             case "list":
                 showTask();
@@ -85,22 +93,54 @@ public class TaskManager {
         }
     }
 
-    private static void showTask() {
-        System.out.println(" ");
-        System.out.println("  ------- Here is list of Your tasks --------");
-        int index = 1;
-        for (String[] taskElement : tasks) {
-            System.out.print(index + ": ");
-            for (String oneTask : taskElement) {
-                System.out.print(oneTask);
-            }
-            System.out.println("");
-            index++;
+    private static void removeTask() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(ConsoleColors.BLUE + "Please select number to remove.");
+
+        String n = scanner.nextLine();
+        while (!isNumberGreaterEqualZero(n)) {
+            System.out.println(ConsoleColors.RED + "Incorrect argument passed. Please give number greater or equal 0");
+            scanner.nextLine();
         }
-        System.out.println(" ");
+
+        try {
+            tasks = ArrayUtils.remove(tasks, Integer.valueOf(n) - 1);
+            System.out.println(ConsoleColors.GREEN + "Task " + n + " was removed correctly!");
+        } catch (IndexOutOfBoundsException ex) {
+            System.out.println(ConsoleColors.RED + "Tasks does not exists... Type 'list' to check tasks numbers!");
+        }
     }
-    
-    
+
+
+    public static boolean isNumberGreaterEqualZero(String input) {
+        if (NumberUtils.isParsable(input)) {
+            return Integer.parseInt(input) >= 0;
+        }
+        return false;
+    }
+
+
+    private static void showTask() {
+        if (tasks.length > 0) {
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println("  ------- Here is list of Your tasks --------");
+            int index = 1;
+            for (String[] taskElement : tasks) {
+                System.out.print(index + ": ");
+                for (String oneTask : taskElement) {
+                    System.out.print(oneTask);
+                }
+                System.out.println("");
+                index++;
+            }
+            System.out.println(" ");
+        } else {
+            System.out.println("There is no tasks...");
+        }
+    }
+
+
     private static void loadTasks() throws FileNotFoundException {
         tasks = new String[0][4];
         Scanner scanner = new Scanner(new File(file));
@@ -113,15 +153,13 @@ public class TaskManager {
     }
 
 
-    
-    
     private static void addTask() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please add task description");
+        System.out.println(ConsoleColors.BLUE + "Please add task description");
         String desc = scanner.nextLine();
-        System.out.println("Please add task due date");
+        System.out.println(ConsoleColors.BLUE + "Please add task due date");
         String date = scanner.nextLine();
-        System.out.println("Is your task is important: true/false");
+        System.out.println(ConsoleColors.BLUE + "Is your task is important: true/false");
         String important = scanner.nextLine();
 
         StringBuilder taskString = new StringBuilder();
@@ -130,8 +168,7 @@ public class TaskManager {
         tasks = Arrays.copyOf(tasks, tasks.length + 1);
         tasks[tasks.length - 1] = task;
     }
-    
-    
+
 
     private static boolean isExitChoice(String userChoice) {
         if (userChoice.equalsIgnoreCase("exit")) {
@@ -142,16 +179,12 @@ public class TaskManager {
     }
 
 
-    
-    
     private static void executeInvalidChoice(String userChoice) {
         System.out.println(ConsoleColors.RED_BACKGROUND + "Invalid option: '"
                 + userChoice + "'. Please choose a valid option");
         System.out.println(ConsoleColors.RESET);
     }
 
-    
-    
 
     private static void showMainMenu() {
         System.out.println(ConsoleColors.BLUE + "Please select an option:");
@@ -163,16 +196,12 @@ public class TaskManager {
     }
 
 
-    
-    
     private static void showExitMessage() {
         System.out.println(ConsoleColors.RED + "Goodbye and remember to come back soon!");
         System.out.print(ConsoleColors.RESET);
     }
 
 
-    
-    
     private static void showWelcomeMessage() {
         System.out.println(ConsoleColors.RED + "Welcome in Task Manager");
         System.out.print(ConsoleColors.RESET);
