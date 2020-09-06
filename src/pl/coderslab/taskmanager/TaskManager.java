@@ -26,7 +26,7 @@ public class TaskManager {
         try {
             loadTasks();
         } catch (FileNotFoundException e) {
-            System.err.println("Nie odnaleziono pliku!");
+            System.err.println("File not found!");
             e.printStackTrace();
         }
 
@@ -54,9 +54,10 @@ public class TaskManager {
             printWriter = new PrintWriter(file);
             for (String[] taskElement : tasks) {
                 for (String oneTask : taskElement) {
-                    printWriter.append(oneTask).append(", ");
+                    printWriter.write(oneTask);
+                    printWriter.write(", ");
                 }
-                printWriter.append("\n");
+                printWriter.write("\n");
             }
             printWriter.close();
         } catch (FileNotFoundException e) {
@@ -155,11 +156,11 @@ public class TaskManager {
 
     private static void addTask() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println(ConsoleColors.BLUE + "Please add task description");
+        System.out.println(ConsoleColors.BLUE + "   [Please add task description]");
         String desc = scanner.nextLine();
-        System.out.println(ConsoleColors.BLUE + "Please add task due date");
+        System.out.println(ConsoleColors.BLUE + "   [Please add task due date]");
         String date = scanner.nextLine();
-        System.out.println(ConsoleColors.BLUE + "Is your task is important: true/false");
+        System.out.println(ConsoleColors.BLUE + "   [Is your task is important: true/false]");
         String important = scanner.nextLine();
 
         StringBuilder taskString = new StringBuilder();
@@ -180,30 +181,45 @@ public class TaskManager {
 
 
     private static void executeInvalidChoice(String userChoice) {
-        System.out.println(ConsoleColors.RED_BACKGROUND + "Invalid option: '"
-                + userChoice + "'. Please choose a valid option");
+        clearConsoleScreen();
+        System.out.println(ConsoleColors.RED + "  Invalid option: '" + userChoice);
         System.out.println(ConsoleColors.RESET);
     }
 
 
     private static void showMainMenu() {
-        System.out.println(ConsoleColors.BLUE + "Please select an option:");
+        System.out.println(ConsoleColors.BLUE + "  [Please select an option]");
         System.out.print(ConsoleColors.RESET);
-        System.out.println("\tadd");
-        System.out.println("\tremove");
-        System.out.println("\tlist");
-        System.out.println("\texit");
+        System.out.print("  add");
+        System.out.print(" | remove");
+        System.out.print(" | list");
+        System.out.println(" | exit");
     }
 
 
     private static void showExitMessage() {
-        System.out.println(ConsoleColors.RED + "Goodbye and remember to come back soon!");
+        clearConsoleScreen();
+        System.out.println(ConsoleColors.GREEN + "+-----------------------------------------+");
+        System.out.println(ConsoleColors.GREEN + "  Goodbye and remember to come back soon!");
+        System.out.println(ConsoleColors.GREEN + "+-----------------------------------------+\n");
         System.out.print(ConsoleColors.RESET);
     }
 
 
+    private static void clearConsoleScreen() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 200; i++) {
+            sb.append(" \n");
+        }
+        System.out.println(sb);
+    }
+
+
     private static void showWelcomeMessage() {
-        System.out.println(ConsoleColors.RED + "Welcome in Task Manager");
+        clearConsoleScreen();
+        System.out.println(ConsoleColors.RED + "+---------------------------+");
+        System.out.println(ConsoleColors.RED + "   Welcome in Task Manager");
+        System.out.println(ConsoleColors.RED + "+---------------------------+\n");
         System.out.print(ConsoleColors.RESET);
     }
 }
