@@ -53,9 +53,13 @@ public class TaskManager {
         try {
             printWriter = new PrintWriter(file);
             for (String[] taskElement : tasks) {
+                int index = 0;
                 for (String oneTask : taskElement) {
                     printWriter.write(oneTask);
-                    printWriter.write(", ");
+                    if (index < 2){
+                        printWriter.write(", ");
+                    }
+                    index++;
                 }
                 printWriter.write("\n");
             }
@@ -122,10 +126,9 @@ public class TaskManager {
 
 
     private static void showTask() {
+        clearConsoleScreen();
         if (tasks.length > 0) {
-            System.out.println(" ");
-            System.out.println(" ");
-            System.out.println("  ------- Here is list of Your tasks --------");
+            System.out.println(ConsoleColors.CYAN + "  ------- Here is list of Your tasks --------" + ConsoleColors.RESET);
             int index = 1;
             for (String[] taskElement : tasks) {
                 System.out.print(index + ": ");
@@ -137,7 +140,8 @@ public class TaskManager {
             }
             System.out.println(" ");
         } else {
-            System.out.println("There is no tasks...");
+            System.out.println(ConsoleColors.RED + " There is no tasks...");
+            System.out.println(" ");
         }
     }
 
@@ -156,11 +160,11 @@ public class TaskManager {
 
     private static void addTask() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println(ConsoleColors.BLUE + "   [Please add task description]");
+        System.out.println(ConsoleColors.BLUE + "  [Please add task description]");
         String desc = scanner.nextLine();
-        System.out.println(ConsoleColors.BLUE + "   [Please add task due date]");
+        System.out.println(ConsoleColors.BLUE + "  [Please add task due date]");
         String date = scanner.nextLine();
-        System.out.println(ConsoleColors.BLUE + "   [Is your task is important: true/false]");
+        System.out.println(ConsoleColors.BLUE + "  [Is your task is important: true/false]");
         String important = scanner.nextLine();
 
         StringBuilder taskString = new StringBuilder();
