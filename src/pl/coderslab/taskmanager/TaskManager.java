@@ -57,7 +57,7 @@ public class TaskManager {
                 for (String oneTask : taskElement) {
                     printWriter.write(oneTask);
                     if (index < 2){
-                        printWriter.write(", ");
+                        printWriter.write(",");
                     }
                     index++;
                 }
